@@ -42,49 +42,57 @@ int open_file(char* name, int mode)
 	}
 	else 
 	{
-//		std::cout << "-2\n";
 
 		if (mode)
 		{
 			std::cout << "File doesnt exist" << std::endl;
 			return 2;
 		}
-//			fclose(rFile);
 	}
 	return 0;
 }
+// "jsfjsl\\sd\"\fs\\fd\s\\s\'fskfsk'\\"
 
 void read_and_write(char* cppfile, char* txtfile)
 {
-//	std::cout << "0\n";
 	FILE* rFile = fopen(cppfile, "r");
-//	std::cout << "1\n";
 	FILE* wFile = fopen(txtfile, "w");
-//	std::cout << "2\n";
 	char temp[N] = {'\0'};
 	while (fgets(temp, N, rFile) != NULL)
 	{
-		std::cout << temp;
 		for (int i = 0; i < N || temp[i] == '\0'; ++i)
 		{
+			if (temp[i] == '\'')
+			{
+				fputc(temp[++i], wFile);
+				if (temp[i] == '\\')
+					fputc(temp[++i], wFile);
+				fputc('\n', wFile);
+				i++;
+			}
 			if (temp[i] == '\"')
 			{
+//				i++;
 				while (temp[++i] != '\"')
-					fputc(temp[i], wFile);
+				{
+					if (temp[i] == '\\')
+					{
+						fputc(temp[i], wFile);
+						fputc(temp[++i], wFile);
+					}
+					else
+						fputc(temp[i], wFile);
+//					i++;
+				}
 				fputc('\n', wFile);
 			}
-//			if (temp[i] == '\'')
-//			{
-//				while (temp[++i] != '\'')
-//				{
-//					std::cout << i << std::endl;
-//					fputc(temp[i], wFile);
-//				}
-//				fputc('\n', wFile);
-//			}
-
 		}
+		for (int i = 0; i < N; ++i)
+			temp[i] = '\0';
 	}
 	fclose(wFile);
 	fclose(rFile);
 }
+
+
+
