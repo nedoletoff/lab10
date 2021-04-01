@@ -51,17 +51,30 @@ int open_file(char* name, int mode)
 	}
 	return 0;
 }
-// "jsfjsl\\sd\"\fs\\fd\s\\s\'fskfsk'\\"
+/* //"jsfjsl\\sd\"\fs\\fd\s\\s\'fskfsk'\\"
+ * std::cout << "E" << std::endl;
+*/
+ 
 
 void read_and_write(char* cppfile, char* txtfile)
 {
+//	std::cout << "Hello world" << std::endl;
 	FILE* rFile = fopen(cppfile, "r");
 	FILE* wFile = fopen(txtfile, "w");
-	char temp[N] = {'\0'};
+	char temp[N+1] = {'\0'};
+	int check = 0;
 	while (fgets(temp, N, rFile) != NULL)
 	{
 		for (int i = 0; i < N || temp[i] == '\0'; ++i)
 		{
+			if (temp[i] == '*' && temp[i+1] == '/')
+				check = 0;
+			if (temp[i] == '/' && temp[i+1] == '*')
+				check = 1;
+			if (check)
+				break;
+			if (temp[i] == '/' && temp[i+1] == '/')
+				break;
 			if (temp[i] == '\'')
 			{
 				fputc(temp[++i], wFile);
@@ -72,7 +85,6 @@ void read_and_write(char* cppfile, char* txtfile)
 			}
 			if (temp[i] == '\"')
 			{
-//				i++;
 				while (temp[++i] != '\"')
 				{
 					if (temp[i] == '\\')
@@ -82,7 +94,6 @@ void read_and_write(char* cppfile, char* txtfile)
 					}
 					else
 						fputc(temp[i], wFile);
-//					i++;
 				}
 				fputc('\n', wFile);
 			}
